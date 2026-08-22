@@ -87,7 +87,13 @@ export default function Navbar() {
       <div className="navbar">
         <div className="navbar-inner">
           <a href="#home" className="logo">
-            <span className="box">IK</span>
+            <img
+              className="box"
+              src={theme === 'light' ? '/icons/ik-icon-light-128.png' : '/icons/ik-icon-dark-128.png'}
+              alt="Itamar Klein"
+              width={36}
+              height={36}
+            />
             <span className="wm">
               Itamar <span className="last">Klein</span>
             </span>

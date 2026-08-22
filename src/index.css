@@ -240,20 +240,11 @@ nav.scrolled .navbar-inner {
   width: 36px;
   height: 36px;
   border-radius: var(--r-menu);
-  border: 1px solid var(--border);
-  background: var(--elevated);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary);
-  font-weight: 900;
-  font-size: 14px;
-  letter-spacing: -0.04em;
-  transition: border-color 0.25s ease, color 0.25s ease;
+  display: block;
+  transition: transform 0.25s ease;
 }
 .logo:hover .box {
-  border-color: var(--primary-line);
-  color: var(--primary);
+  transform: scale(1.05);
 }
 .logo .wm {
   font-weight: 700;
