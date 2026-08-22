@@ -1,315 +1,299 @@
+import { useRef } from 'react'
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
+import { Trans, useTranslation } from 'react-i18next'
 import { GithubMark, LinkedinMark, MailIcon, SendIcon } from './icons'
 import Typewriter from './Typewriter'
+import { EASE, SPRING, rise, stagger } from './motion'
+import { Reveal } from './Reveal'
 
 import { SITE } from '../../config'
 
-type Project = { n: string; cat: string; title: string; desc: string; tags: string[] }
+type Project = { n: string; key: string; title: string; tags: string[]; url: string }
 
-// No public projects to show yet — repopulate this array to bring the project
-// cards back automatically. Shape:
-//   { n: '01', cat: 'web app', title: '…', desc: '…', tags: ['React', 'Node'] }
-const PROJECTS: Project[] = []
-
-const DEVICON = 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons'
-
-const SKILLS: { group: string; items: { name: string; icon?: string }[] }[] = [
+const PROJECTS: Project[] = [
   {
-    group: 'Languages & Frontend',
-    items: [
-      { name: 'TypeScript', icon: `${DEVICON}/typescript/typescript-original.svg` },
-      { name: 'JavaScript', icon: `${DEVICON}/javascript/javascript-original.svg` },
-      { name: 'HTML5', icon: `${DEVICON}/html5/html5-original.svg` },
-      { name: 'CSS3', icon: `${DEVICON}/css3/css3-original.svg` },
-      { name: 'Sass', icon: `${DEVICON}/sass/sass-original.svg` },
-      { name: 'Vue.js', icon: `${DEVICON}/vuejs/vuejs-original.svg` },
-      { name: 'Nuxt.js', icon: `${DEVICON}/nuxtjs/nuxtjs-original.svg` },
-      { name: 'React', icon: `${DEVICON}/react/react-original.svg` },
-      { name: 'Angular', icon: `${DEVICON}/angularjs/angularjs-original.svg` },
-      { name: 'Tailwind', icon: `${DEVICON}/tailwindcss/tailwindcss-original.svg` },
-      { name: 'Vite', icon: `${DEVICON}/vitejs/vitejs-original.svg` },
-    ],
-  },
-  {
-    group: 'Backend & Data',
-    items: [
-      { name: 'Node.js', icon: `${DEVICON}/nodejs/nodejs-original.svg` },
-      { name: 'NestJS', icon: `${DEVICON}/nestjs/nestjs-original.svg` },
-      { name: 'Express' },
-      { name: 'REST APIs' },
-      { name: 'GraphQL', icon: `${DEVICON}/graphql/graphql-plain.svg` },
-      { name: 'OpenAPI / Swagger', icon: `${DEVICON}/swagger/swagger-original.svg` },
-      { name: 'WebSockets' },
-      { name: 'PostgreSQL', icon: `${DEVICON}/postgresql/postgresql-original.svg` },
-      { name: 'TypeORM' },
-      { name: 'Redis', icon: `${DEVICON}/redis/redis-original.svg` },
-      { name: 'MongoDB', icon: `${DEVICON}/mongodb/mongodb-original.svg` },
-    ],
-  },
-  {
-    group: 'Architecture & Tools',
-    items: [
-      { name: 'Microservices' },
-      { name: 'WebRTC' },
-      { name: 'Streaming Media' },
-      { name: 'Docker', icon: `${DEVICON}/docker/docker-original.svg` },
-      { name: 'Kubernetes', icon: `${DEVICON}/kubernetes/kubernetes-plain.svg` },
-      { name: 'Linux', icon: `${DEVICON}/linux/linux-original.svg` },
-      { name: 'Nginx', icon: `${DEVICON}/nginx/nginx-original.svg` },
-      { name: 'CI/CD' },
-      { name: 'Git', icon: `${DEVICON}/git/git-original.svg` },
-    ],
+    n: '01',
+    key: 'vaulter',
+    title: 'Vaulter',
+    tags: ['Markdown', 'Local-first', 'Obsidian', 'AI Context'],
+    url: 'https://vaulter.itamarklein.com',
   },
 ]
 
-const EXPERIENCE = [
-  {
-    dt: '2024 — Present',
-    role: 'Senior Software Engineer',
-    points: [
-      'Build full-stack features for AI-driven fintech products in the Israeli pension and retirement space.',
-      'Lead backend infrastructure and API design — owning service architecture, API contracts, and engineering standards across the platform.',
-      'Backend in NestJS with PostgreSQL and TypeORM; frontends in Vue, Nuxt, and Tailwind.',
-    ],
-  },
-  {
-    dt: '2022 — 2024',
-    role: 'Software Team Leader',
-    points: [
-      'Led a team of ~8 engineers building an on-premise platform for debriefing multimedia and telemetry data.',
-      'Designed and implemented a microservice architecture focused on scaling and deployment.',
-      'Owned hiring, technical planning, and mentoring.',
-    ],
-  },
-  {
-    dt: '2021 — 2022',
-    role: 'Technical Lead',
-    points: [
-      'Tech lead across frontend and backend, driving architecture design and code standards.',
-      'Led a system-wide transition to a stateless, horizontally scalable architecture.',
-      'Established clean-code practices and owned the codebase from code review to merge.',
-    ],
-  },
-  {
-    dt: '2019 — 2021',
-    role: 'Software Engineer',
-    points: [
-      'Designed and built a multimedia streaming application on a microservices, 3-tier architecture.',
-      'MEAN stack (MongoDB, Express, Angular, Node/NestJS) with media servers (Wowza, Kurento, Janus).',
-      'Streaming over WebRTC, HLS, MPEG-DASH, and RTSP.',
-    ],
-  },
-  {
-    dt: '2018 — 2019',
-    role: 'Full-Stack Developer',
-    points: ['Built web applications with React and Angular (part-time).'],
-  },
-]
+type ExperienceItem = { role: string; points: string[]; from: string; to: string | null }
+
+/** Shared section header — kicker + title, revealed together. */
+function Head({ kick, title, sub, center }: { kick: string; title: string; sub?: string; center?: boolean }) {
+  return (
+    <Reveal className="shead">
+      <motion.div variants={rise} className="kick" style={center ? { justifyContent: 'center' } : undefined}>
+        {kick}
+      </motion.div>
+      <motion.h2 variants={rise} className="title">
+        {title}
+      </motion.h2>
+      {sub && (
+        <motion.p variants={rise} className="sub" style={center ? { marginInline: 'auto' } : undefined}>
+          {sub}
+        </motion.p>
+      )}
+    </Reveal>
+  )
+}
 
 function Hero() {
+  const { t } = useTranslation()
+  const heroRef = useRef<HTMLElement>(null)
+  // watermark drifts at ~15% of scroll speed — depth without a parallax library
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
+  const wmY = useTransform(scrollYProgress, [0, 1], [0, 120])
+
+  const name = t('hero.name')
+  const roles = t('hero.roles', { returnObjects: true }) as string[]
+
   return (
-    <header id="home" className="hero">
-      <div className="watermark">
+    <header id="home" className="hero" ref={heroRef}>
+      <motion.div className="watermark" style={{ y: wmY }}>
         <span>IK</span>
-      </div>
-      <div className="hero-left">
-        <span className="status">
+      </motion.div>
+
+      <motion.div className="hero-left" variants={stagger} initial="hidden" animate="shown">
+        <motion.span variants={rise} className="status">
           <span className="ping">
             <i className="a" />
             <i />
-          </span>{' '}
-          Open for collaboration
-        </span>
-        <h1 className="name">
-          Itamar Klein
-          <span className="role">
-            <Typewriter
-              phrases={[
-                'Senior software engineer',
-                'Full-stack developer',
-                'Building products that last',
-              ]}
-            />
           </span>
+          {t('hero.status')}
+        </motion.span>
+
+        <h1 className="name">
+          {/* letter-by-letter so the name assembles itself on load */}
+          <motion.span
+            variants={{ hidden: {}, shown: { transition: { staggerChildren: 0.035, delayChildren: 0.15 } } }}
+            style={{ display: 'inline-block' }}
+          >
+            {name.split('').map((c, i) => (
+              <motion.span
+                key={`${c}-${i}`}
+                className="ch"
+                variants={{
+                  hidden: { opacity: 0, y: '0.4em', rotateX: -60 },
+                  shown: { opacity: 1, y: 0, rotateX: 0, transition: { duration: 0.5, ease: EASE } },
+                }}
+              >
+                {c}
+              </motion.span>
+            ))}
+          </motion.span>
+          <motion.span variants={rise} className="role">
+            <Typewriter phrases={roles} />
+          </motion.span>
         </h1>
-        <p className="desc">
-          I turn hard problems into <b>scalable, production-ready products</b> — clean, modular,
-          built to last. From first sketch to launch.
-        </p>
-        <div className="actions">
-          <a href="#projects" className="btn btn-white">
-            View My Work
-          </a>
-          <a href="#contact" className="btn btn-blue">
-            Let's Talk
+
+        <motion.p variants={rise} className="desc">
+          <Trans i18nKey="hero.desc" components={{ b: <b /> }} />
+        </motion.p>
+
+        <motion.div variants={rise} className="actions">
+          <motion.a
+            href="#contact"
+            className="btn btn-primary"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.96 }}
+            transition={SPRING}
+          >
+            {t('hero.ctaPrimary')}
             <SendIcon />
-          </a>
-        </div>
-      </div>
-      <div className="avatar-wrap">
+          </motion.a>
+          <motion.a
+            href="#projects"
+            className="btn btn-ghost"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.96 }}
+            transition={SPRING}
+          >
+            {t('hero.ctaSecondary')}
+          </motion.a>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        className="avatar-wrap"
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
+      >
         <div className="corner tl" />
         <div className="corner br" />
-        <div className="avatar-glow" />
         <div className="avatar">
-          <img src="https://avatars.githubusercontent.com/u/293653803?v=4" alt="Itamar Klein" />
+          <img src="https://avatars.githubusercontent.com/u/293653803?v=4" alt={name} />
           <div className="ov" />
         </div>
-      </div>
+      </motion.div>
     </header>
   )
 }
 
 function About() {
+  const { t } = useTranslation()
   return (
     <section id="about" className="block wrap">
-      <div className="shead reveal">
-        <div className="kick">About</div>
-        <h2 className="title">Who I am.</h2>
-      </div>
-      <div className="about">
-        <div className="reveal">
+      <Head kick={t('about.kick')} title={t('about.title')} />
+      <Reveal className="about">
+        <motion.div variants={rise}>
           <p>
-            I'm a <b>senior software engineer</b> who enjoys building the whole picture — the
-            foundations underneath, the logic in the middle, and the interface people actually touch.
+            <Trans i18nKey="about.p1" components={{ b: <b /> }} />
           </p>
           <p>
-            I build software that's <b>clean, reliable, and made to last</b>, and I own it end to
-            end — from system design down to the details users actually feel. I move fast without
-            cutting corners, and I deliver code that's easy to trust, extend, and scale as a product
-            grows.
+            <Trans i18nKey="about.p2" components={{ b: <b /> }} />
           </p>
           <p>
-            I'm also genuinely easy to work with: <b>clear communication, honest scoping, and
-            dependable delivery</b>. I stay calm under pressure, keep you in the loop at every step,
-            and turn an idea or a rough brief into a product that ships — and keeps working long
-            after launch.
+            <Trans i18nKey="about.p3" components={{ b: <b /> }} />
           </p>
-        </div>
-        <div className="facts reveal">
+        </motion.div>
+        <motion.div variants={rise} className="facts">
           <div className="r">
-            <span className="k">Role</span>
-            <span className="v">Senior Software Engineer</span>
+            <span className="k">{t('about.facts.role')}</span>
+            <span className="v">{t('about.facts.roleValue')}</span>
           </div>
           <div className="r">
-            <span className="k">Focus</span>
-            <span className="v">Full-stack</span>
+            <span className="k">{t('about.facts.focus')}</span>
+            <span className="v">{t('about.facts.focusValue')}</span>
           </div>
           <div className="r">
-            <span className="k">Experience</span>
-            <span className="v">7+ years</span>
+            <span className="k">{t('about.facts.experience')}</span>
+            <span className="v num">{t('about.facts.experienceValue')}</span>
           </div>
           <div className="r">
-            <span className="k">Status</span>
+            <span className="k">{t('about.facts.status')}</span>
             <span className="v ok">
               <span className="ping">
                 <i className="a" />
                 <i />
               </span>
-              Open to collaborate
+              {t('about.facts.statusValue')}
             </span>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </Reveal>
     </section>
   )
 }
 
 function Projects() {
+  const { t } = useTranslation()
   return (
     <section id="projects" className="block wrap">
-      <div className="shead reveal">
-        <div className="kick">Portfolio</div>
-        <h2 className="title">Selected works.</h2>
-        <p className="sub">
-          {PROJECTS.length
-            ? 'A curated selection of projects that made me confident building software.'
-            : 'Public case studies are on the way — here is what to expect.'}
-        </p>
-      </div>
+      <Head
+        kick={t('projects.kick')}
+        title={t('projects.title')}
+        sub={PROJECTS.length ? t('projects.subWithItems') : t('projects.subEmpty')}
+      />
 
-      {PROJECTS.length ? (
-        <div className="pgrid">
-          {PROJECTS.map((p) => (
-            <div key={p.n} className="pcard reveal">
-              <span className="pn">{p.n}</span>
-              <span className="cat">{p.cat}</span>
-              <h3>
-                {p.title} <a href="#">↗</a>
-              </h3>
-              <p>{p.desc}</p>
-              <div className="tags">
-                {p.tags.map((t) => (
-                  <span key={t} className="tag">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="pcard pbuilding reveal">
-          <span className="cat">in progress</span>
-          <h3>Public case studies are on the way</h3>
-          <p>
-            Most of my work lives in private, production codebases. I'm putting together a few
-            public projects and write-ups — check back soon, new work is on the way.
-          </p>
-        </div>
-      )}
-
-      {PROJECTS.length > 0 && (
-        <a className="allbtn reveal" href={SITE.githubReposUrl} target="_blank" rel="noopener">
-          Explore all on GitHub ↗
-        </a>
-      )}
-    </section>
-  )
-}
-
-function Skills() {
-  return (
-    <section id="skills" className="block wrap">
-      <div className="shead reveal">
-        <div className="kick">Tech Stack</div>
-        <h2 className="title">Skills.</h2>
-      </div>
-      <div className="reveal">
-        {SKILLS.map((g) => (
-          <div key={g.group} className="skg">
-            <h4>{g.group}</h4>
-            <div className="skrow">
-              {g.items.map((s) => (
-                <span key={s.name} className="sk">
-                  {s.icon && <img src={s.icon} alt="" />}
-                  {s.name}
+      <Reveal className="pgrid">
+        {PROJECTS.map((p) => (
+          <motion.div
+            key={p.n}
+            className="pcard"
+            variants={rise}
+            whileHover={{ y: -4 }}
+            transition={SPRING}
+          >
+            <span className="pn num">{p.n}</span>
+            <span className="cat">{t(`projects.${p.key}.cat`)}</span>
+            <h3>
+              {p.title}{' '}
+              <a href={p.url} target="_blank" rel="noopener" className="arrow">
+                ↗
+              </a>
+            </h3>
+            <p>{t(`projects.${p.key}.desc`)}</p>
+            <div className="tags">
+              {p.tags.map((tag) => (
+                <span key={tag} className="tag">
+                  {tag}
                 </span>
               ))}
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+        <motion.div variants={rise} className="pcard pbuilding">
+          <span className="cat">{t('projects.buildingCat')}</span>
+          <h3>{t('projects.buildingTitle')}</h3>
+          <p>{t('projects.buildingDesc')}</p>
+        </motion.div>
+      </Reveal>
+
+      <Reveal>
+        <motion.a
+          variants={rise}
+          className="allbtn"
+          href={SITE.githubReposUrl}
+          target="_blank"
+          rel="noopener"
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.97 }}
+        >
+          {t('projects.exploreAll')}
+          <span className="arrow">↗</span>
+        </motion.a>
+      </Reveal>
     </section>
   )
 }
 
 function Experience() {
+  const { t } = useTranslation()
+  const items = t('experience.items', { returnObjects: true }) as ExperienceItem[]
+  const present = t('experience.present')
+  const railRef = useRef<HTMLDivElement>(null)
+  // the violet rail fills as this block scrolls through the middle of the viewport
+  const { scrollYProgress } = useScroll({
+    target: railRef,
+    offset: ['start 70%', 'end 60%'],
+  })
+  const fill = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 })
+
   return (
     <section id="experience" className="block wrap">
-      <div className="shead reveal">
-        <div className="kick">Experience</div>
-        <h2 className="title">My journey.</h2>
-      </div>
-      <div className="reveal">
-        {EXPERIENCE.map((x) => (
-          <div key={x.dt} className="xp-item">
-            <div className="dt">{x.dt}</div>
-            <h3>{x.role}</h3>
+      <Head kick={t('experience.kick')} title={t('experience.title')} />
+      <div className="xp" ref={railRef}>
+        <div className="xp-track">
+          <motion.div className="xp-fill" style={{ scaleY: fill }} />
+        </div>
+        {items.map((x, i) => (
+          <motion.div
+            key={i}
+            className="xp-item"
+            initial="hidden"
+            whileInView="shown"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={stagger}
+          >
+            <motion.span
+              className="dot"
+              variants={{
+                hidden: { scale: 0.5, borderColor: 'var(--border-strong)' },
+                shown: {
+                  scale: 1,
+                  borderColor: 'var(--primary)',
+                  transition: { ...SPRING, delay: 0.1 },
+                },
+              }}
+            />
+            <motion.div variants={rise} className="dt">
+              <span className="num">{x.from}</span> —{' '}
+              {x.to ? <span className="num">{x.to}</span> : present}
+            </motion.div>
+            <motion.h3 variants={rise}>{x.role}</motion.h3>
             <ul>
               {x.points.map((pt) => (
-                <li key={pt}>{pt}</li>
+                <motion.li key={pt} variants={rise}>
+                  {pt}
+                </motion.li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
@@ -317,46 +301,44 @@ function Experience() {
 }
 
 function Contact() {
+  const { t } = useTranslation()
   return (
-    <section id="contact" className="block wrap">
-      <div className="shead reveal" style={{ textAlign: 'center' }}>
-        <div className="kick" style={{ justifyContent: 'center' }}>
-          Contact
-        </div>
-        <h2 className="title">Let's build together.</h2>
-      </div>
-      <div className="reveal" style={{ textAlign: 'center' }}>
-        <p className="sub" style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-          I'm always up for interesting challenges and good people to build with. Tell me what
-          you're working on — I usually reply within a day or two.
-        </p>
-        <div className="csoc" style={{ justifyContent: 'center', marginTop: '28px' }}>
-          <a href={SITE.githubUrl} target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
-            <GithubMark />
-          </a>
-          <a
-            href={SITE.linkedinUrl}
-            target="_blank"
-            rel="noopener"
-            aria-label="LinkedIn"
-            title="LinkedIn"
-          >
-            <LinkedinMark />
-          </a>
-          <a href={`mailto:${SITE.email}`} aria-label="Gmail" title="Gmail">
-            <MailIcon />
-          </a>
-        </div>
-      </div>
+    <section id="contact" className="block wrap" style={{ textAlign: 'center' }}>
+      <Head kick={t('contact.kick')} title={t('contact.title')} sub={t('contact.sub')} center />
+      <Reveal>
+        <motion.div variants={rise} className="csoc" style={{ justifyContent: 'center' }}>
+          {[
+            { href: SITE.githubUrl, label: t('contact.aria.github'), icon: <GithubMark />, ext: true },
+            { href: SITE.linkedinUrl, label: t('contact.aria.linkedin'), icon: <LinkedinMark />, ext: true },
+            { href: `mailto:${SITE.email}`, label: t('contact.aria.email'), icon: <MailIcon />, ext: false },
+          ].map((s) => (
+            <motion.a
+              key={s.label}
+              href={s.href}
+              aria-label={s.label}
+              title={s.label}
+              {...(s.ext ? { target: '_blank', rel: 'noopener' } : {})}
+              whileHover={{ y: -4 }}
+              whileTap={{ scale: 0.92 }}
+              transition={SPRING}
+            >
+              {s.icon}
+            </motion.a>
+          ))}
+        </motion.div>
+      </Reveal>
     </section>
   )
 }
 
 function Footer() {
+  const { t } = useTranslation()
   return (
     <footer className="wrap">
-      <span>© {new Date().getFullYear()} Itamar Klein</span>
-      <span>built with care</span>
+      <span className="num">
+        © {new Date().getFullYear()} {t('hero.name')}
+      </span>
+      <span>{t('footer.builtWith')}</span>
     </footer>
   )
 }
@@ -367,7 +349,6 @@ export default function Sections() {
       <Hero />
       <About />
       <Projects />
-      <Skills />
       <Experience />
       <Contact />
       <Footer />

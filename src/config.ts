@@ -4,8 +4,8 @@
 const env = import.meta.env
 
 export const SITE = {
-  githubUrl: env.VITE_GITHUB_URL,
-  githubReposUrl: env.VITE_GITHUB_REPOS_URL,
-  linkedinUrl: env.VITE_LINKEDIN_URL,
-  email: env.VITE_EMAIL,
+  githubUrl: env.VITE_GITHUB_URL || 'https://github.com/itamarkln-dev',
+  githubReposUrl: env.VITE_GITHUB_REPOS_URL || 'https://github.com/itamarkln-dev?tab=repositories',
+  linkedinUrl: env.VITE_LINKEDIN_URL || 'https://linkedin.com/in/itamarklein',
+  email: env.VITE_EMAIL || 'itamarkln.dev@gmail.com',
 }

@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "work": "Projects",
+    "contact": "Contact"
+  },
+  "aria": {
+    "themeToLight": "Switch to light mode",
+    "themeToDark": "Switch to dark mode",
+    "toggleTheme": "Toggle theme",
+    "toggleMenu": "Toggle menu",
+    "language": "Switch to Hebrew"
+  },
+  "hero": {
+    "status": "Open for collaboration",
+    "name": "Itamar Klein",
+    "roles": [
+      "Senior software engineer",
+      "Full-stack developer",
+      "Building products that last"
+    ],
+    "desc": "I take messy problems and turn them into <b>products that actually work in production</b> — clean, modular, built to last. From first sketch to launch.",
+    "ctaPrimary": "Let's Talk",
+    "ctaSecondary": "View My Work"
+  },
+  "about": {
+    "kick": "About",
+    "title": "Who I am.",
+    "p1": "I'm a <b>senior software engineer</b> who likes building the whole picture — the foundation underneath, the logic in the middle, and the interface people actually touch.",
+    "p2": "I build software that's <b>clean, reliable, and made to last</b>, and I own it end to end — from system design down to the little details users actually feel. I move fast without cutting corners, and I leave behind code that's easy to trust and extend as the product grows.",
+    "p3": "And on top of that, I'm just easy to work with: <b>clear communication, honest scoping, and delivery you can count on</b>. I stay calm under pressure, keep you in the loop the whole way, and turn an idea or a rough brief into a product that ships — and keeps working long after launch.",
+    "facts": {
+      "role": "Role",
+      "roleValue": "Senior Software Engineer",
+      "focus": "Focus",
+      "focusValue": "Full-stack",
+      "experience": "Experience",
+      "experienceValue": "7+ years",
+      "status": "Status",
+      "statusValue": "Open to collaborate"
+    }
+  },
+  "projects": {
+    "kick": "Portfolio",
+    "title": "Selected works.",
+    "subWithItems": "A few projects that actually made me believe I can build software.",
+    "subEmpty": "More stuff coming soon — here's a taste of what's on the way.",
+    "buildingCat": "in progress",
+    "buildingTitle": "More stuff coming soon",
+    "buildingDesc": "Most of my work lives in private, production codebases, so there's not much to show right now. Putting together a few public projects and write-ups — stay tuned.",
+    "exploreAll": "Explore all on GitHub",
+    "vaulter": {
+      "cat": "dev tool",
+      "desc": "A private, AI-powered knowledge vault for builders — runs fully local and markdown-based, so your assistant starts every session already knowing your projects, decisions, and conventions."
+    }
+  },
+  "experience": {
+    "kick": "Experience",
+    "title": "My journey.",
+    "items": [
+      {
+        "role": "Senior Software Engineer",
+        "points": [
+          "Build full-stack features for AI-driven fintech products in the Israeli pension and retirement space.",
+          "Lead backend infrastructure and API design — owning service architecture, API contracts, and engineering standards across the platform.",
+          "Backend in NestJS with PostgreSQL and TypeORM; frontends in Vue, Nuxt, and Tailwind."
+        ],
+        "from": "2024",
+        "to": null
+      },
+      {
+        "role": "Software Team Leader",
+        "points": [
+          "Led a team of ~8 engineers building an on-premise platform for debriefing multimedia and telemetry data.",
+          "Designed and implemented a microservice architecture focused on scaling and deployment.",
+          "Owned hiring, technical planning, and mentoring."
+        ],
+        "from": "2022",
+        "to": "2024"
+      },
+      {
+        "role": "Technical Lead",
+        "points": [
+          "Tech lead across frontend and backend, driving architecture design and code standards.",
+          "Led a system-wide transition to a stateless, horizontally scalable architecture.",
+          "Established clean-code practices and owned the codebase from code review to merge."
+        ],
+        "from": "2021",
+        "to": "2022"
+      },
+      {
+        "role": "Software Engineer",
+        "points": [
+          "Designed and built a multimedia streaming application on a microservices, 3-tier architecture.",
+          "MEAN stack (MongoDB, Express, Angular, Node/NestJS) with media servers (Wowza, Kurento, Janus).",
+          "Streaming over WebRTC, HLS, MPEG-DASH, and RTSP."
+        ],
+        "from": "2019",
+        "to": "2021"
+      },
+      {
+        "role": "Full-Stack Developer",
+        "points": [
+          "Built web applications with React and Angular (part-time)."
+        ],
+        "from": "2018",
+        "to": "2019"
+      }
+    ],
+    "present": "Present"
+  },
+  "contact": {
+    "kick": "Contact",
+    "title": "Let's build together.",
+    "sub": "Always down for interesting challenges and good people to build with. Tell me what you're working on — I usually get back within a day or two.",
+    "aria": {
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "email": "Email"
+    }
+  },
+  "footer": {
+    "builtWith": "built with care"
+  }
+}
