@@ -287,8 +287,8 @@ function Experience() {
             </motion.div>
             <motion.h3 variants={rise}>{x.role}</motion.h3>
             <ul>
-              {x.points.map((pt) => (
-                <motion.li key={pt} variants={rise}>
+              {x.points.map((pt, j) => (
+                <motion.li key={j} variants={rise}>
                   {pt}
                 </motion.li>
               ))}
